@@ -20,6 +20,12 @@
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.addressables",
+            "expression": "1.19.0",
+            "define": "DEVKIT_TESTS_WITH_ADDRESSABLES"
+        }
+    ],
     "noEngineReferences": false
 }
