@@ -66,13 +66,23 @@ namespace RoadAndCode.DevKit.Builds
             string[] scenes = new string[request.Scenes.Count];
             for (int i = 0; i < scenes.Length; i++) scenes[i] = request.Scenes[i];
 
+            BuildTarget target = PlatformTargets.TargetFor(profile.Platform);
             var options = new BuildPlayerOptions
             {
                 scenes = scenes,
-                target = PlatformTargets.TargetFor(profile.Platform),
+                target = target,
                 locationPathName = request.Location,
                 options = profile.Development ? BuildOptions.Development : BuildOptions.None,
             };
+
+            // BuildPlayer can build a platform the editor is not on, but Addressables builds its
+            // content for the platform the editor is on. Without the switch a web build made from a
+            // Windows editor gets a catalog and no bundles.
+            if (EditorUserBuildSettings.activeBuildTarget != target
+                && !EditorUserBuildSettings.SwitchActiveBuildTarget(BuildPipeline.GetBuildTargetGroup(target), target))
+            {
+                return new BuildOutcome(profile.Name, false, request.Location, 0, 0f, 1, 0, DateTime.UtcNow);
+            }
 
             Action restore = ApplyOverrides(profile);
             try
