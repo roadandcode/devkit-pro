@@ -54,7 +54,7 @@ namespace RoadAndCode.DevKit.Sandbox.Tests
         public void The_whole_project_was_read()
         {
             Assert.That(Fact("Scenes"), Is.EqualTo("3"));
-            Assert.That(Fact("Prefabs"), Is.EqualTo("6"));
+            Assert.That(Fact("Prefabs"), Is.EqualTo("7"));
             Assert.That(int.Parse(Fact("Objects")), Is.GreaterThan(20));
         }
 

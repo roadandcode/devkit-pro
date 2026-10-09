@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -15,7 +14,6 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
         public const string OrphansGroup = "Orphans";
 
         private const string PropsLabel = "props";
-        private const string RemovedAddress = "props/removed-statue";
 
         // The default group that comes with new settings stays empty, for the audit's empty-group check.
         private static void WriteAddressables(Prefabs prefabs)
@@ -60,11 +58,12 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
         }
 
         // Everything is saved by now. These are the things that cannot be made through the editor
-        // API, because they are exactly what the editor stops you from doing.
+        // API, because they are exactly what the editor stops you from doing. An addressable entry
+        // for a deleted asset is not among them: Addressables removes one the next time it imports
+        // the group, so it would not survive a fresh clone.
         private static void Break()
         {
             string spinnerGuid = AssetDatabase.AssetPathToGUID("Assets/Sandbox/Scripts/Spinner.cs");
-            string propsGroupPath = $"{AddressableAssetSettingsDefaultObject.Settings.GroupFolder}/{PropsGroup}.asset";
 
             AssetDatabase.DeleteAsset($"{Root}/Materials/Doomed.mat");
             AssetDatabase.DeleteAsset($"{Root}/Prefabs/Doomed.prefab");
@@ -79,20 +78,6 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
                 "  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n" +
                 "  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n" +
                 $"  m_Script: {{fileID: 11500000, guid: {GoneGuid}, type: 3}}\n  m_Name: Orphan\n  m_EditorClassIdentifier: \n  _displayName: Orphan\n");
-
-            // An addressable entry for an asset that was deleted behind the editor's back: a copy
-            // of the group's first entry with another GUID and address.
-            string group = File.ReadAllText(propsGroupPath);
-            Match first = Regex.Match(group, @"  - m_GUID: [0-9a-f]{32}\n(?:    .*\n)+");
-            if (!first.Success)
-            {
-                Debug.LogError("[Sandbox] The props group did not serialize the way the stale entry expects.");
-                return;
-            }
-
-            string stale = Regex.Replace(first.Value, "m_GUID: [0-9a-f]{32}", "m_GUID: " + GoneGuid.Substring(0, 31) + "1");
-            stale = Regex.Replace(stale, "m_Address: .*", "m_Address: " + RemovedAddress);
-            File.WriteAllText(propsGroupPath, group.Insert(first.Index + first.Length, stale));
 
             AssetDatabase.Refresh();
         }

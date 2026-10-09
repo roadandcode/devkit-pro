@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Orphans
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Orphans
-  m_GUID: c1b736991669ece4aa58caa831e8b78d
+  m_GUID: f863068241d0f2b458c7e0801d4ed117
   m_SerializeEntries:
   - m_GUID: 47f6b1e8440451447a7a7dadb5f3075d
     m_Address: orphans/old-crate

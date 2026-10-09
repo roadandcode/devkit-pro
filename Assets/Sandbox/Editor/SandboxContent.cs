@@ -50,6 +50,9 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
                 OldCrate = WritePrefab("OldCrate", PrimitiveType.Cube, paintMaterial, Vector3.one),
                 OldBarrel = WritePrefab("OldBarrel", PrimitiveType.Cylinder, paintMaterial, new Vector3(0.7f, 0.5f, 0.7f)),
                 Doomed = WritePrefab("Doomed", PrimitiveType.Sphere, paintMaterial, Vector3.one),
+
+                // Never made addressable, but an AssetReference in the broken scene points at it.
+                Lantern = WritePrefab("Lantern", PrimitiveType.Capsule, paintMaterial, new Vector3(0.3f, 0.3f, 0.3f)),
             };
 
             WriteData(wood, prefabs);
@@ -77,6 +80,8 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
             public GameObject OldBarrel { get; set; }
 
             public GameObject Doomed { get; set; }
+
+            public GameObject Lantern { get; set; }
         }
 
         private static void Clear()

@@ -50,18 +50,26 @@ namespace RoadAndCode.DevKit.Sandbox.Tests
         public void Every_group_is_in_the_overview()
         {
             Assert.That(_result.Groups, Has.Count.EqualTo(5));
-            Assert.That(Group(SandboxContent.PropsGroup).Entries, Is.EqualTo(3));
+            Assert.That(Group(SandboxContent.PropsGroup).Entries, Is.EqualTo(2));
             Assert.That(Group(SandboxContent.OrphansGroup).Entries, Is.EqualTo(2));
         }
 
         [Test]
-        public void The_entry_for_the_deleted_asset_is_an_error()
+        public void The_two_asset_references_that_lead_nowhere_are_errors_at_the_scene_that_holds_them()
         {
-            List<Finding> findings = Of(MissingAssetRule.RuleId);
+            List<Finding> findings = Of(DanglingReferenceRule.RuleId);
 
-            Assert.That(findings, Has.Count.EqualTo(1));
-            Assert.That(findings[0].Message, Does.Contain("props/removed-statue"));
-            Assert.That(findings[0].ObjectPath, Is.EqualTo(SandboxContent.PropsGroup));
+            Assert.That(findings, Has.Count.EqualTo(2));
+            Assert.That(findings, Has.All.Matches<Finding>(finding => finding.AssetPath == SandboxContent.BrokenScene));
+            Assert.That(findings, Has.Some.Matches<Finding>(finding => finding.Message.Contains("Lantern.prefab, which is not addressable")));
+            Assert.That(findings, Has.Some.Matches<Finding>(finding => finding.Message.Contains("no longer exists")));
+        }
+
+        [Test]
+        public void The_asset_reference_in_the_clean_scene_is_fine()
+        {
+            Assert.That(Of(DanglingReferenceRule.RuleId), Has.None.Matches<Finding>(finding => finding.AssetPath == SandboxContent.CleanScene));
+            Assert.That(Of(MissingAssetRule.RuleId), Is.Empty);
         }
 
         [Test]
@@ -79,7 +87,7 @@ namespace RoadAndCode.DevKit.Sandbox.Tests
         {
             // The crate is held by an AssetReference in the Clean scene and the barrel is loaded by
             // label; the pillar and the arena scene are loaded by address.
-            Assert.That(Group(SandboxContent.PropsGroup).UsedEntries, Is.EqualTo(3));
+            Assert.That(Group(SandboxContent.PropsGroup).UsedEntries, Is.EqualTo(2));
             Assert.That(Group(SandboxContent.ScenesGroup).UsedEntries, Is.EqualTo(1));
             Assert.That(Group(SandboxContent.SceneryGroup).UsedEntries, Is.EqualTo(1));
         }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scenes
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Scenes
-  m_GUID: dedf7760315268244be3a56c78581121
+  m_GUID: a1cdd9ddd120d884cbde668485fffe4b
   m_SerializeEntries:
   - m_GUID: 4b3248bbcf36bd14aada56901eb70f5e
     m_Address: scenes/arena

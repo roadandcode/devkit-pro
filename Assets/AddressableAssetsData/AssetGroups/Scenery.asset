@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scenery
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Scenery
-  m_GUID: 6468ac2e643b9554cb19f5e22c0ae091
+  m_GUID: 59027c730f9f1e04cad1598d40d685f2
   m_SerializeEntries:
   - m_GUID: 1ff45db61b0b08641b3ea46a6fd32078
     m_Address: scenery/pillar

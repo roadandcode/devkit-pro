@@ -13,16 +13,10 @@ MonoBehaviour:
   m_Name: Props
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Props
-  m_GUID: 648c9f2ae5c567248aa4018a9935ed98
+  m_GUID: 05947143cdb135f4188e03f24100d1b4
   m_SerializeEntries:
   - m_GUID: 419b486e3586f64439a2467479445b57
     m_Address: props/crate
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - props
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: deadbeefdeadbeefdeadbeefdeadbee1
-    m_Address: props/removed-statue
     m_ReadOnly: 0
     m_SerializedLabels:
     - props

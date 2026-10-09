@@ -104,7 +104,23 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
             // Its prefab is deleted afterwards: a missing prefab.
             PrefabUtility.InstantiatePrefab(prefabs.Doomed, scene);
 
+            // Two AssetReferences the audit should object to: one to a prefab nobody made
+            // addressable, one to the prefab that is deleted afterwards.
+            AddLoader("Lantern Loader", prefabs.Lantern);
+            AddLoader("Doomed Loader", prefabs.Doomed);
+
             EditorSceneManager.SaveScene(scene, BrokenScene);
+        }
+
+        private static void AddLoader(string name, GameObject target)
+        {
+            var loader = new GameObject(name).AddComponent<ContentLoader>();
+            using (var serialized = new SerializedObject(loader))
+            {
+                serialized.FindProperty("_crate").FindPropertyRelative("m_AssetGUID").stringValue = Guid(target);
+                serialized.FindProperty("_crateParent").objectReferenceValue = loader.transform;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+            }
         }
 
         private static string Guid(Object asset) => AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(asset));

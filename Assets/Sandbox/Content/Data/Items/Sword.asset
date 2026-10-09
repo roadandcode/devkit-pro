@@ -15,4 +15,4 @@ MonoBehaviour:
   _displayName: Sword
   _price: 120
   _icon: {fileID: 2800000, guid: fccb4526b56085a4bb11570f3a148c8c, type: 3}
-  _worldPrefab: {fileID: 4459108132541593806, guid: 419b486e3586f64439a2467479445b57, type: 3}
+  _worldPrefab: {fileID: 5289369605110321487, guid: 419b486e3586f64439a2467479445b57, type: 3}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: RoadAndCode.DevKit.Sandbox::RoadAndCode.DevKit.Sandbox.EnemyDefinition
   _displayName: Archer
   _health: 12
-  _prefab: {fileID: 8103270679815595425, guid: 225f7d6b4a609c04fb9e8c241168d2f5, type: 3}
+  _prefab: {fileID: 4501194250605675784, guid: d50a10d1a152eec49ab8200e8e7143c1, type: 3}
   _drops:
   - {fileID: 11400000, guid: 387acce9603f58948ad987600d0987d9, type: 2}
   - {fileID: 11400000, guid: 5c62eb86691bdfb49883ea6e36ea1db7, type: 2}

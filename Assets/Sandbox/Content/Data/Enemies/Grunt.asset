@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: RoadAndCode.DevKit.Sandbox::RoadAndCode.DevKit.Sandbox.EnemyDefinition
   _displayName: Grunt
   _health: 20
-  _prefab: {fileID: 4459108132541593806, guid: 419b486e3586f64439a2467479445b57, type: 3}
+  _prefab: {fileID: 5289369605110321487, guid: 419b486e3586f64439a2467479445b57, type: 3}
   _drops:
   - {fileID: 11400000, guid: f0d553796ef6e7440b316af7fa7cd8b2, type: 2}
