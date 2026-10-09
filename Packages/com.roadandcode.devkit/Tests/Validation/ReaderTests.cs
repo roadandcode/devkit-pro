@@ -56,7 +56,7 @@ namespace RoadAndCode.DevKit.Validation.Tests
             Assert.That(StateOf(record, "_list.Array.data[1]"), Is.EqualTo(ReferenceState.None));
             Assert.That(StateOf(record, "_slots.Array.data[0]._icon"), Is.EqualTo(ReferenceState.Assigned));
             Assert.That(StateOf(record, "_slots.Array.data[1]._icon"), Is.EqualTo(ReferenceState.None));
-            Assert.That(record.References, Has.Count.EqualTo(6), "the script reference and the number array are not fields to report");
+            Assert.That(record.References, Has.Count.EqualTo(6), "the script reference, the number array and the empty obsolete field are not fields to report");
         }
 
         [Test]
@@ -70,6 +70,25 @@ namespace RoadAndCode.DevKit.Validation.Tests
             ComponentRecord record = new RecordBuilder().ForObject(asset);
 
             Assert.That(StateOf(record, "_assigned"), Is.EqualTo(ReferenceState.Missing));
+        }
+
+        [Test]
+        public void A_dead_reference_under_an_obsolete_field_is_left_out()
+        {
+            var material = new Material(Shader.Find("Sprites/Default"));
+            var asset = Track(ScriptableObject.CreateInstance<ProbeAsset>());
+            using (var serialized = new UnityEditor.SerializedObject(asset))
+            {
+                serialized.FindProperty("_retired").objectReferenceValue = material;
+                serialized.FindProperty("_assigned").objectReferenceValue = material;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            Object.DestroyImmediate(material);
+            ComponentRecord record = new RecordBuilder().ForObject(asset);
+
+            Assert.That(StateOf(record, "_assigned"), Is.EqualTo(ReferenceState.Missing));
+            Assert.That(record.References, Has.None.Matches<ReferenceRecord>(reference => reference.PropertyPath == "_retired"));
         }
 
         [Test]

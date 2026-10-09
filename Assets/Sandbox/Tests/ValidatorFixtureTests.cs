@@ -65,7 +65,10 @@ namespace RoadAndCode.DevKit.Sandbox.Tests
 
             AssertOne(findings, SandboxContent.BrokenScene, "Ghost");
             AssertOne(findings, Data + "/Orphan.asset", string.Empty);
-            Assert.That(findings, Has.Count.EqualTo(2));
+
+            // Two objects inside a healthy asset: one finding for the file, not one each.
+            AssertOne(findings, SandboxContent.RetiredTablePath, "2 sub-assets");
+            Assert.That(findings, Has.Count.EqualTo(3));
         }
 
         [Test]

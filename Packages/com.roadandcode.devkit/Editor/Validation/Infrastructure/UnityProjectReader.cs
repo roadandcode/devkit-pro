@@ -159,16 +159,23 @@ namespace RoadAndCode.DevKit.Validation
             Type mainType = AssetDatabase.GetMainAssetTypeAtPath(path);
             if (mainType != null && !typeof(ScriptableObject).IsAssignableFrom(mainType)) return false;
 
+            // A null entry is an object whose script could not be found. It has no name to report,
+            // so the ones inside a healthy asset are counted and reported once for the file.
             Object main = AssetDatabase.LoadMainAssetAtPath(path);
+            int missing = 0;
             foreach (Object item in AssetDatabase.LoadAllAssetsAtPath(path))
             {
-                if (item != null && !(item is ScriptableObject)) continue;
-
-                // A null entry is an object whose script could not be found.
-                string objectPath = item == null || item == main ? string.Empty : item.name;
-                Visit(builder.ForAsset(item, path, objectPath), visit, summary);
+                if (item == null) missing++;
+                else if (item is ScriptableObject) Visit(builder.ForAsset(item, path, item == main ? string.Empty : item.name), visit, summary);
             }
 
+            if (main == null)
+            {
+                Visit(builder.ForAsset(null, path, string.Empty), visit, summary);
+                missing--;
+            }
+
+            if (missing > 0) Visit(builder.ForAsset(null, path, missing == 1 ? "1 sub-asset" : $"{missing} sub-assets"), visit, summary);
             return true;
         }
 

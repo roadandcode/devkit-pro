@@ -24,9 +24,17 @@ namespace RoadAndCode.DevKit.Validation
             {
                 if (!record.Components[i].IsMissingScript) continue;
 
-                string what = record.Kind == ObjectKind.Asset ? "The script this asset was made from is missing" : "A component's script is missing";
-                findings.Add(new Finding(RuleId, Severity.Error, what, record.AssetPath, record.ObjectPath, $"component {i + 1}"));
+                findings.Add(new Finding(RuleId, Severity.Error, Describe(record), record.AssetPath, record.ObjectPath,
+                    record.Kind == ObjectKind.Asset ? string.Empty : $"component {i + 1}"));
             }
+        }
+
+        private static string Describe(ObjectRecord record)
+        {
+            if (record.Kind != ObjectKind.Asset) return "A component's script is missing";
+            return record.ObjectPath.Length == 0
+                ? "The script this asset was made from is missing"
+                : "Objects stored inside this asset were made from scripts that are missing";
         }
     }
 

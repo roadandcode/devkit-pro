@@ -32,7 +32,7 @@ namespace RoadAndCode.DevKit.Sandbox.Tests
 
             Assert.That(Count(catalog, typeof(ItemDefinition).FullName), Is.EqualTo(3));
             Assert.That(Count(catalog, typeof(EnemyDefinition).FullName), Is.EqualTo(2));
-            Assert.That(Count(catalog, typeof(WaveTable).FullName), Is.EqualTo(1));
+            Assert.That(Count(catalog, typeof(WaveTable).FullName), Is.EqualTo(2));
             Assert.That(Count(catalog, typeof(BuildPlan).FullName), Is.EqualTo(1));
         }
 

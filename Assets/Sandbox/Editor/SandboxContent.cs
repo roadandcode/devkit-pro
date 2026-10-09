@@ -21,6 +21,7 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
         public const string ArenaScene = Root + "/Scenes/Arena.unity";
         public const string BrokenScene = Root + "/Scenes/Broken.unity";
         public const string WaveTablePath = Root + "/Data/Waves/FirstWave.asset";
+        public const string RetiredTablePath = Root + "/Data/Waves/Retired.asset";
 
         // Stands in for the GUID of something that was deleted.
         private const string GoneGuid = "deadbeefdeadbeefdeadbeefdeadbeef";

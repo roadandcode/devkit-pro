@@ -26,6 +26,10 @@ namespace RoadAndCode.DevKit.Validation.Tests
         [SerializeField] private float[] _numbers = new float[0];
         [SerializeField] private string _text;
 
+        // Stands for a field the code no longer uses but old assets still carry.
+        [Obsolete("Moved elsewhere.")]
+        [SerializeField] private Material _retired;
+
         public void Fill(Material assigned, Texture2D texture)
         {
             _assigned = assigned;

@@ -79,7 +79,23 @@ namespace RoadAndCode.DevKit.Sandbox.Editor
                 "  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n" +
                 $"  m_Script: {{fileID: 11500000, guid: {GoneGuid}, type: 3}}\n  m_Name: Orphan\n  m_EditorClassIdentifier: \n  _displayName: Orphan\n");
 
+            // A healthy asset that still carries two objects made from scripts that are gone, the way
+            // a volume profile from a project template carries components nobody installed.
+            string waveTableGuid = AssetDatabase.AssetPathToGUID("Assets/Sandbox/Scripts/WaveTable.cs");
+            File.WriteAllText(RetiredTablePath,
+                "%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n" +
+                AssetObject("11400000", waveTableGuid, "Retired") + "  _waves: []\n" +
+                AssetObject("7000000000000000001", GoneGuid, "OldRule") +
+                AssetObject("7000000000000000002", GoneGuid, "OlderRule"));
+
             AssetDatabase.Refresh();
+        }
+
+        private static string AssetObject(string fileId, string scriptGuid, string name)
+        {
+            return $"--- !u!114 &{fileId}\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {{fileID: 0}}\n" +
+                   "  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n" +
+                   $"  m_Script: {{fileID: 11500000, guid: {scriptGuid}, type: 3}}\n  m_Name: {name}\n  m_EditorClassIdentifier: \n";
         }
     }
 }

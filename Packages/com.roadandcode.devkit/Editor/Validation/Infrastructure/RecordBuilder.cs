@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace RoadAndCode.DevKit.Validation
         };
 
         private readonly Dictionary<Type, bool> _projectTypes = new Dictionary<Type, bool>();
+        private readonly Dictionary<(Type, string), bool> _retiredFields = new Dictionary<(Type, string), bool>();
 
         public ObjectRecord ForGameObject(GameObject gameObject, string assetPath, string objectPath, ObjectKind kind)
         {
@@ -54,8 +56,11 @@ namespace RoadAndCode.DevKit.Validation
                     {
                         if (property.depth == 0 && EngineFields.Contains(property.name)) continue;
 
+                        ReferenceState state = StateOf(property);
+                        if (state != ReferenceState.Assigned && IsRetired(target.GetType(), property.propertyPath)) continue;
+
                         if (references == null) references = new List<ReferenceRecord>();
-                        references.Add(new ReferenceRecord(property.propertyPath, StateOf(property)));
+                        references.Add(new ReferenceRecord(property.propertyPath, state));
                     }
                     else
                     {
@@ -87,6 +92,25 @@ namespace RoadAndCode.DevKit.Validation
             SerializedPropertyType element = property.GetArrayElementAtIndex(0).propertyType;
             return element == SerializedPropertyType.ObjectReference || element == SerializedPropertyType.Generic
                                                                      || element == SerializedPropertyType.ManagedReference;
+        }
+
+        // A field marked [Obsolete] is still serialized, and still holds whatever it pointed at
+        // when the code moved on. Nobody reads it, so what it points at is nobody's problem.
+        private bool IsRetired(Type type, string propertyPath)
+        {
+            int dot = propertyPath.IndexOf('.');
+            string fieldName = dot < 0 ? propertyPath : propertyPath.Substring(0, dot);
+            if (_retiredFields.TryGetValue((type, fieldName), out bool known)) return known;
+
+            bool retired = false;
+            for (Type current = type; current != null && !retired; current = current.BaseType)
+            {
+                FieldInfo field = current.GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                retired = field != null && field.IsDefined(typeof(ObsoleteAttribute), false);
+            }
+
+            _retiredFields[(type, fieldName)] = retired;
+            return retired;
         }
 
         private bool IsProjectScript(Object target)

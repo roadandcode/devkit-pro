@@ -27,7 +27,21 @@ namespace RoadAndCode.DevKit.Validation.Tests
         {
             var record = new ObjectRecord("Assets/Data/Orphan.asset", string.Empty, ObjectKind.Asset, new[] { ComponentRecord.MissingScript() });
 
-            Assert.That(Records.Check(new MissingScriptRule(), record)[0].Message, Does.Contain("asset"));
+            Finding finding = Records.Check(new MissingScriptRule(), record)[0];
+            Assert.That(finding.Message, Is.EqualTo("The script this asset was made from is missing"));
+            Assert.That(finding.Detail, Is.Empty);
+        }
+
+        [Test]
+        public void Missing_scripts_inside_a_healthy_asset_are_one_finding_for_the_file()
+        {
+            var record = new ObjectRecord("Assets/Settings/Profile.asset", "9 sub-assets", ObjectKind.Asset, new[] { ComponentRecord.MissingScript() });
+
+            List<Finding> findings = Records.Check(new MissingScriptRule(), record);
+
+            Assert.That(findings, Has.Count.EqualTo(1));
+            Assert.That(findings[0].Message, Does.StartWith("Objects stored inside this asset"));
+            Assert.That(findings[0].Location, Is.EqualTo("Assets/Settings/Profile.asset > 9 sub-assets"));
         }
 
         [Test]
