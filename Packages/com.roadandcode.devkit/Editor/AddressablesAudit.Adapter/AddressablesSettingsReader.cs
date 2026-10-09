@@ -35,6 +35,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Adapter
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
             var groups = new List<GroupRecord>();
             var names = new HashSet<string>(StringComparer.Ordinal);
+            var dependencySizes = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
 
             foreach (AddressableAssetGroup group in settings.groups)
             {
@@ -44,7 +45,13 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Adapter
                 var entries = new List<EntryRecord>();
                 foreach (AddressableAssetEntry entry in group.entries)
                 {
-                    entries.Add(Read(entry, options.IncludePackageAssets));
+                    EntryRecord record = Read(entry, options.IncludePackageAssets);
+                    entries.Add(record);
+                    foreach (string dependency in record.Dependencies)
+                    {
+                        if (!dependencySizes.ContainsKey(dependency) && File.Exists(dependency)) dependencySizes[dependency] = new FileInfo(dependency).Length;
+                    }
+
                     names.Add(entry.address);
                     foreach (string label in entry.labels) names.Add(label);
                 }
@@ -53,7 +60,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Adapter
             }
 
             ReferenceIndex references = ReadReferences(settings.ConfigFolder, names, progress);
-            snapshot = new AddressablesSnapshot(groups, ReadBundles(), references, BuildScenes());
+            snapshot = new AddressablesSnapshot(groups, ReadBundles(), references, BuildScenes(), dependencySizes);
             return true;
         }
 
@@ -142,7 +149,9 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Adapter
         {
             var index = new ReferenceIndex();
             var files = new List<string>(Directory.EnumerateFiles(AssetsRoot, "*.*", SearchOption.AllDirectories));
-            string ownFolder = settingsFolder.TrimEnd('/') + "/";
+
+            // The settings report their folder with the platform's separator.
+            string ownFolder = settingsFolder.Replace('\\', '/').TrimEnd('/') + "/";
 
             for (int i = 0; i < files.Count; i++)
             {

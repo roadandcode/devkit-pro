@@ -110,7 +110,8 @@ namespace RoadAndCode.DevKit.AddressablesAudit
 
                 foreach (EntryRecord entry in group.Entries)
                 {
-                    if (usage.IsUsed(entry)) continue;
+                    // An entry whose asset is gone is already an error; saying it is unused as well adds nothing.
+                    if (usage.IsUsed(entry) || !entry.AssetExists) continue;
                     findings.Add(new Finding(EntryRuleId, Severity.Info, $"Nothing references entry '{entry.Address}'", entry.AssetPath, group.Name));
                 }
             }
@@ -183,8 +184,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
 
             foreach (GroupRecord group in snapshot.Groups)
             {
-                long bytes = 0;
-                foreach (EntryRecord entry in group.Entries) bytes += entry.SizeBytes;
+                long bytes = usage.SourceBytes(group);
                 if (bytes <= options.MaxBundleBytes) continue;
 
                 findings.Add(new Finding(EstimateRuleId, Severity.Info,
@@ -194,7 +194,11 @@ namespace RoadAndCode.DevKit.AddressablesAudit
         }
     }
 
-    /// <summary>A scene that is both addressable and in Build Settings ends up in the player twice.</summary>
+    /// <summary>
+    /// A scene that is both addressable and in Build Settings ends up in the player twice. The
+    /// Addressables package stops this when either list is edited in the editor, so in practice it
+    /// is a state left by a merge or a hand edit, which nothing re-checks until the next edit.
+    /// </summary>
     public sealed class SceneInBuildRule : IAuditRule
     {
         public const string RuleId = "scene-in-build";

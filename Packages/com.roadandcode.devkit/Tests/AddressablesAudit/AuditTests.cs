@@ -11,6 +11,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Tests
         private readonly List<GroupRecord> _groups = new List<GroupRecord>();
         private readonly List<BundleRecord> _bundles = new List<BundleRecord>();
         private readonly List<string> _buildScenes = new List<string>();
+        private readonly Dictionary<string, long> _dependencySizes = new Dictionary<string, long>();
 
         public ReferenceIndex References { get; } = new ReferenceIndex();
 
@@ -44,7 +45,13 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Tests
             return this;
         }
 
-        public AddressablesSnapshot Build() => new AddressablesSnapshot(_groups, _bundles, References, _buildScenes);
+        public SnapshotBuilder DependencySize(string path, long megabytes)
+        {
+            _dependencySizes[path] = megabytes * 1024 * 1024;
+            return this;
+        }
+
+        public AddressablesSnapshot Build() => new AddressablesSnapshot(_groups, _bundles, References, _buildScenes, _dependencySizes);
 
         public static EntryRecord Entry(string address, string path = null, string[] labels = null, long megabytes = 0, params string[] dependencies)
         {
@@ -217,6 +224,26 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Tests
             Assert.That(findings[0].Rule, Is.EqualTo("large-group"));
             Assert.That(findings[0].Severity, Is.EqualTo(Severity.Info));
             Assert.That(findings[0].Message, Does.Contain("15.00 MB").And.Contain("estimate"));
+        }
+
+        [Test]
+        public void The_estimate_counts_what_the_entries_pull_in_but_not_what_is_addressable_itself()
+        {
+            const string texture = "Assets/Textures/Rock.png";
+            const string shared = "Assets/Textures/Shared.png";
+            AddressablesSnapshot snapshot = new SnapshotBuilder()
+                .Group("Scenery", SnapshotBuilder.Entry("pillar", null, null, 1, texture, shared), SnapshotBuilder.Entry("wall", null, null, 1, texture, shared))
+                .Group("Shared", SnapshotBuilder.Entry("shared", shared, null, 30))
+                .DependencySize(texture, 12)
+                .DependencySize(shared, 30)
+                .Build();
+
+            var usage = new Usage(snapshot);
+
+            Assert.That(usage.SourceBytes(snapshot.Groups[0]), Is.EqualTo(14L * 1024 * 1024), "two prefabs and one copy of the texture they share");
+
+            List<Finding> findings = Run(new OversizedBundleRule(), snapshot, maxMegabytes: 13f);
+            Assert.That(findings.ConvertAll(finding => finding.ObjectPath), Is.EqualTo(new[] { "Scenery", "Shared" }));
         }
 
         [Test]

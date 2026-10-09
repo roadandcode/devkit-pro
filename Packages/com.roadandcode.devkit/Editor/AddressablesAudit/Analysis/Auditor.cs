@@ -61,9 +61,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
             int entries = 0;
             foreach (GroupRecord group in snapshot.Groups)
             {
-                long bytes = 0;
-                foreach (EntryRecord entry in group.Entries) bytes += entry.SizeBytes;
-                groups.Add(new GroupSummary(group.Name, group.Entries.Count, usage.UsedIn(group), bytes));
+                groups.Add(new GroupSummary(group.Name, group.Entries.Count, usage.UsedIn(group), usage.SourceBytes(group)));
                 entries += group.Entries.Count;
             }
 

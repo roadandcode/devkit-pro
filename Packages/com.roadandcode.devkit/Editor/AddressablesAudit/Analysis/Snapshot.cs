@@ -74,13 +74,17 @@ namespace RoadAndCode.DevKit.AddressablesAudit
     /// <summary>Everything the audit looks at, read out of the project once.</summary>
     public sealed class AddressablesSnapshot
     {
+        private readonly IReadOnlyDictionary<string, long> _dependencySizes;
+
+        /// <param name="dependencySizes">File size of each asset the entries depend on, by path.</param>
         public AddressablesSnapshot(IReadOnlyList<GroupRecord> groups, IReadOnlyList<BundleRecord> bundles, ReferenceIndex references,
-            IReadOnlyCollection<string> buildScenes)
+            IReadOnlyCollection<string> buildScenes, IReadOnlyDictionary<string, long> dependencySizes = null)
         {
             Groups = groups ?? new GroupRecord[0];
             Bundles = bundles ?? new BundleRecord[0];
             References = references ?? new ReferenceIndex();
             BuildScenes = new HashSet<string>(buildScenes ?? new string[0], StringComparer.OrdinalIgnoreCase);
+            _dependencySizes = dependencySizes ?? new Dictionary<string, long>();
         }
 
         public IReadOnlyList<GroupRecord> Groups { get; }
@@ -91,6 +95,9 @@ namespace RoadAndCode.DevKit.AddressablesAudit
 
         /// <summary>Scenes enabled in Build Settings.</summary>
         public ISet<string> BuildScenes { get; }
+
+        /// <summary>The size on disk of something an entry depends on, or zero when it is not known.</summary>
+        public long DependencySize(string assetPath) => _dependencySizes.TryGetValue(assetPath, out long bytes) ? bytes : 0;
     }
 
     public sealed class AuditOptions

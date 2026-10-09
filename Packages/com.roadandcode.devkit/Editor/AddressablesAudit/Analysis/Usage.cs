@@ -12,9 +12,11 @@ namespace RoadAndCode.DevKit.AddressablesAudit
         private readonly HashSet<EntryRecord> _used = new HashSet<EntryRecord>();
         private readonly Dictionary<string, EntryRecord> _byPath = new Dictionary<string, EntryRecord>(StringComparer.OrdinalIgnoreCase);
         private readonly List<EntryRecord> _folders = new List<EntryRecord>();
+        private readonly AddressablesSnapshot _snapshot;
 
         public Usage(AddressablesSnapshot snapshot)
         {
+            _snapshot = snapshot;
             var pending = new Queue<EntryRecord>();
             foreach (GroupRecord group in snapshot.Groups)
             {
@@ -63,6 +65,26 @@ namespace RoadAndCode.DevKit.AddressablesAudit
             return used;
         }
 
+        /// <summary>
+        /// The size of a group's source files: its entries, and everything they depend on that is not
+        /// addressable in its own right and so gets packed in with them. A stand-in for bundle size.
+        /// </summary>
+        public long SourceBytes(GroupRecord group)
+        {
+            long bytes = 0;
+            var counted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (EntryRecord entry in group.Entries)
+            {
+                bytes += entry.SizeBytes;
+                foreach (string dependency in entry.Dependencies)
+                {
+                    if (EntryFor(dependency) == null && counted.Add(dependency)) bytes += _snapshot.DependencySize(dependency);
+                }
+            }
+
+            return bytes;
+        }
+
         private static bool IsNamed(EntryRecord entry, ReferenceIndex references)
         {
             if (references.HasGuid(entry.Guid) || references.HasName(entry.Address)) return true;
@@ -94,7 +116,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
 
         public int UsedEntries { get; }
 
-        /// <summary>Total size of the entries' source files. An estimate of weight, not a bundle size.</summary>
+        /// <summary>Size of the source files that go into the group. An estimate of weight, not a bundle size.</summary>
         public long SourceBytes { get; }
     }
 
