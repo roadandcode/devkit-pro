@@ -17,7 +17,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
     {
         private const string Title = "Addressables Audit";
         private const string EmptyText = "Press Audit to look for groups nothing references, entries whose asset is gone, dependencies copied into several bundles and bundles over the size limit.";
-        private const float RowHeight = 20f;
+        private const float RowHeight = 22f;
 
         private AuditPresenter _presenter;
         private IReadOnlyList<GroupSummary> _groupRows = new GroupSummary[0];
@@ -93,7 +93,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
             _findings.Chosen += finding => FindingChosen?.Invoke(finding);
             _findings.Show(null, EmptyText);
 
-            var split = new TwoPaneSplitView(0, 132f, TwoPaneSplitViewOrientation.Vertical);
+            var split = new TwoPaneSplitView(0, 136f, TwoPaneSplitViewOrientation.Vertical);
             split.Add(_groups);
             split.Add(_findings);
             _content = split;

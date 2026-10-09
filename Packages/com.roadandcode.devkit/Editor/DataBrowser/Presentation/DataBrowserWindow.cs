@@ -17,7 +17,7 @@ namespace RoadAndCode.DevKit.DataBrowser
     public sealed class DataBrowserWindow : EditorWindow, IBrowserView
     {
         private const string Title = "ScriptableObjects";
-        private const float RowHeight = 20f;
+        private const float RowHeight = 22f;
 
         private readonly List<TypeEntry> _typeRows = new List<TypeEntry>();
 

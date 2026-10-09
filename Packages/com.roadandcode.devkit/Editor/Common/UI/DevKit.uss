@@ -124,6 +124,10 @@
     margin-bottom: 3px;
 }
 
+.devkit-page__field > .unity-base-field__label {
+    min-width: 230px;
+}
+
 .devkit-page__reset {
     align-self: flex-start;
     margin-top: 12px;

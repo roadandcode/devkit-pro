@@ -59,7 +59,7 @@ namespace RoadAndCode.DevKit.Common
             _list.columns.Add(new Column { name = "severity", title = string.Empty, width = 28, resizable = false, makeCell = MakeIcon, bindCell = BindIcon });
             _list.columns.Add(TextColumn("rule", "Check", 150, false, finding => finding.Rule));
             _list.columns.Add(TextColumn("message", "What", 380, true, finding => finding.Message));
-            _list.columns.Add(TextColumn("location", "Where", 320, true, finding => finding.Location));
+            _list.columns.Add(TextColumn("location", "Where", 320, true, Where));
             _list.selectionChanged += OnSelectionChanged;
             Add(_list);
 
@@ -144,12 +144,16 @@ namespace RoadAndCode.DevKit.Common
                 makeCell = MakeText,
                 bindCell = (cell, row) =>
                 {
+                    Finding finding = _visible[row];
                     var label = (Label)cell;
-                    label.text = text(_visible[row]);
-                    label.tooltip = label.text;
+                    label.text = text(finding);
+                    label.tooltip = finding.Detail.Length > 0 ? label.text + "\n" + finding.Detail : label.text;
                 },
             };
         }
+
+        // A finding about a group or an address has no file to point at; its detail says what it is about.
+        private static string Where(Finding finding) => finding.Location.Length > 0 ? finding.Location : finding.Detail;
 
         private static VisualElement MakeText()
         {
