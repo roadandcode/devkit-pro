@@ -23,5 +23,6 @@
     "type": "git",
     "url": "https://github.com/roadandcode/devkit-pro.git"
   },
+  "documentationUrl": "https://github.com/roadandcode/devkit-pro#readme",
   "changelogUrl": "https://github.com/roadandcode/devkit-pro/blob/main/Packages/com.roadandcode.devkit/CHANGELOG.md"
 }
