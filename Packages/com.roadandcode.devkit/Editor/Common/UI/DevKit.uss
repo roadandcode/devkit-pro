@@ -1,0 +1,130 @@
+/* Shared by every DevKit Pro window and preference page. Colours come from the editor's own
+   variables so the light and dark themes both work. */
+
+.devkit-root {
+    flex-grow: 1;
+}
+
+.devkit-toolbar__spacer {
+    flex-grow: 1;
+}
+
+.devkit-toolbar__search {
+    width: 220px;
+    flex-shrink: 1;
+}
+
+.devkit-status {
+    flex-direction: row;
+    flex-shrink: 0;
+    padding: 3px 6px;
+    border-top-width: 1px;
+    border-top-color: var(--unity-colors-default-border);
+    background-color: var(--unity-colors-toolbar-background);
+}
+
+.devkit-status__text {
+    flex-grow: 1;
+    color: var(--unity-colors-label-text);
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.devkit-empty {
+    flex-grow: 1;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    padding: 24px;
+    color: var(--unity-colors-helpbox-text);
+}
+
+.devkit-findings {
+    flex-grow: 1;
+}
+
+.devkit-findings__list {
+    flex-grow: 1;
+}
+
+.devkit-findings__icon {
+    width: 16px;
+    height: 16px;
+    margin: 2px 4px;
+}
+
+.devkit-cell {
+    padding-left: 4px;
+    padding-right: 4px;
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.devkit-cell--dim {
+    color: var(--unity-colors-helpbox-text);
+}
+
+.devkit-section {
+    padding: 6px 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--unity-colors-default-border);
+}
+
+.devkit-section__title {
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.devkit-row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 22px;
+}
+
+.devkit-row__grow {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.devkit-badge {
+    padding: 1px 6px;
+    margin-left: 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    color: var(--unity-colors-label-text);
+    background-color: var(--unity-colors-button-background);
+}
+
+.devkit-badge--good {
+    background-color: rgba(60, 160, 90, 0.45);
+}
+
+.devkit-badge--bad {
+    background-color: rgba(200, 70, 60, 0.5);
+}
+
+.devkit-page {
+    padding: 10px 10px 10px 12px;
+}
+
+.devkit-page__title {
+    font-size: 19px;
+    -unity-font-style: bold;
+    margin-bottom: 6px;
+}
+
+.devkit-page__summary {
+    white-space: normal;
+    margin-bottom: 12px;
+    color: var(--unity-colors-helpbox-text);
+}
+
+.devkit-page__field {
+    margin-bottom: 3px;
+}
+
+.devkit-page__reset {
+    align-self: flex-start;
+    margin-top: 12px;
+}
