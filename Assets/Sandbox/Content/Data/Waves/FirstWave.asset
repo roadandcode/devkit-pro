@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 173fef87e181ed2498ff5cb53edb5f0c, type: 3}
+  m_Name: FirstWave
+  m_EditorClassIdentifier: RoadAndCode.DevKit.Sandbox::RoadAndCode.DevKit.Sandbox.WaveTable
+  _waves:
+  - _enemy: {fileID: 11400000, guid: 357441b953cc723478173dc3c4ae255b, type: 2}
+    _count: 3
+  - _enemy: {fileID: 11400000, guid: 124cdaa7d5542bb4892466359ed7f9fe, type: 2}
+    _count: 2

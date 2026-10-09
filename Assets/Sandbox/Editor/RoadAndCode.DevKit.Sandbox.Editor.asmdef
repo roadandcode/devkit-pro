@@ -1,0 +1,25 @@
+{
+    "name": "RoadAndCode.DevKit.Sandbox.Editor",
+    "rootNamespace": "RoadAndCode.DevKit.Sandbox.Editor",
+    "references": [
+        "RoadAndCode.DevKit.Sandbox",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "RoadAndCode.DevKit.Common",
+        "RoadAndCode.DevKit.Validation",
+        "RoadAndCode.DevKit.Builds",
+        "RoadAndCode.DevKit.AddressablesAudit",
+        "RoadAndCode.DevKit.DataBrowser"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,17 @@
+{
+    "name": "RoadAndCode.DevKit.Sandbox",
+    "rootNamespace": "RoadAndCode.DevKit.Sandbox",
+    "references": [
+        "Unity.Addressables",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

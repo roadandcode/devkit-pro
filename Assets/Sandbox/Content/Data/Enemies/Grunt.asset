@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 739d01b4fa24d9049bba98b69720bac0, type: 3}
+  m_Name: Grunt
+  m_EditorClassIdentifier: RoadAndCode.DevKit.Sandbox::RoadAndCode.DevKit.Sandbox.EnemyDefinition
+  _displayName: Grunt
+  _health: 20
+  _prefab: {fileID: 4459108132541593806, guid: 419b486e3586f64439a2467479445b57, type: 3}
+  _drops:
+  - {fileID: 11400000, guid: f0d553796ef6e7440b316af7fa7cd8b2, type: 2}

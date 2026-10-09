@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Scenery
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Scenery
+  m_GUID: 6468ac2e643b9554cb19f5e22c0ae091
+  m_SerializeEntries:
+  - m_GUID: 1ff45db61b0b08641b3ea46a6fd32078
+    m_Address: scenery/pillar
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3d61e1b37215da4f9ab82c03a52a183
+    m_Address: scenery/bench
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 0a5970f5f2ec50b41a379ec45cab3766, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4d1cf21fea9531a4caafd28175672465, type: 2}
+    - {fileID: 11400000, guid: 6069c6f5a01c3de498ca72161bef420c, type: 2}
+    m_SchemaDisplayOrder:
+    - Scenery_BundledAssetGroupSchema
+    - Scenery_ContentUpdateGroupSchema
+  m_IncludeInBuild: 1
+  m_IncludeInBuildMigrated: 1
