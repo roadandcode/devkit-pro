@@ -27,7 +27,41 @@ namespace RoadAndCode.DevKit.AddressablesAudit
         }
     }
 
-    /// <summary>An entry whose asset was deleted. The build skips it and the load fails at run time.</summary>
+    /// <summary>
+    /// An AssetReference whose target is not addressable: the asset was deleted, taken out of its
+    /// group, or never added. Nothing in the editor complains and the load fails at run time.
+    /// </summary>
+    public sealed class DanglingReferenceRule : IAuditRule
+    {
+        public const string RuleId = "dangling-reference";
+
+        public string Id => RuleId;
+
+        public void Check(AddressablesSnapshot snapshot, Usage usage, AuditOptions options, List<Finding> findings)
+        {
+            foreach (KeyValuePair<string, List<string>> reference in snapshot.References.Guids)
+            {
+                if (usage.HasEntry(reference.Key)) continue;
+
+                string target = snapshot.ReferencedAssetPath(reference.Key);
+                if (target == null) continue;
+
+                // Inside an addressable folder is addressable.
+                if (target.Length > 0 && usage.EntryFor(target) != null) continue;
+
+                string message = target.Length == 0
+                    ? "An AssetReference points at an asset that no longer exists"
+                    : $"An AssetReference points at {target}, which is not addressable";
+                foreach (string source in reference.Value) findings.Add(new Finding(RuleId, Severity.Error, message, source, detail: reference.Key));
+            }
+        }
+    }
+
+    /// <summary>
+    /// An entry whose asset is gone. The Addressables package drops such an entry by itself the next
+    /// time it imports the group or builds, without failing anything, so this only catches the state
+    /// in between: a file deleted outside the editor that the editor has not noticed yet.
+    /// </summary>
     public sealed class MissingAssetRule : IAuditRule
     {
         public const string RuleId = "missing-asset";

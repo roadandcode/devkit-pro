@@ -11,6 +11,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
     {
         private readonly HashSet<EntryRecord> _used = new HashSet<EntryRecord>();
         private readonly Dictionary<string, EntryRecord> _byPath = new Dictionary<string, EntryRecord>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> _entryGuids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<EntryRecord> _folders = new List<EntryRecord>();
         private readonly AddressablesSnapshot _snapshot;
 
@@ -22,6 +23,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
             {
                 foreach (EntryRecord entry in group.Entries)
                 {
+                    _entryGuids.Add(entry.Guid);
                     if (entry.AssetPath.Length > 0) _byPath[entry.AssetPath] = entry;
                     if (entry.IsFolder) _folders.Add(entry);
                     if (IsNamed(entry, snapshot.References) && _used.Add(entry)) pending.Enqueue(entry);
@@ -40,6 +42,8 @@ namespace RoadAndCode.DevKit.AddressablesAudit
         }
 
         public bool IsUsed(EntryRecord entry) => _used.Contains(entry);
+
+        public bool HasEntry(string guid) => _entryGuids.Contains(guid);
 
         /// <summary>The entry that makes this asset addressable: its own, or a folder entry above it.</summary>
         public EntryRecord EntryFor(string assetPath)

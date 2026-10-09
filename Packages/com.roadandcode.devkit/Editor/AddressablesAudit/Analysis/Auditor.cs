@@ -35,7 +35,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit
         {
             return new IAuditRule[]
             {
-                new MissingAssetRule(), new UnreferencedRule(), new EmptyGroupRule(), new DuplicatedDependencyRule(),
+                new DanglingReferenceRule(), new MissingAssetRule(), new UnreferencedRule(), new EmptyGroupRule(), new DuplicatedDependencyRule(),
                 new OversizedBundleRule(), new DuplicateAddressRule(), new SceneInBuildRule(),
             };
         }

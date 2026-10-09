@@ -12,6 +12,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Tests
         private readonly List<BundleRecord> _bundles = new List<BundleRecord>();
         private readonly List<string> _buildScenes = new List<string>();
         private readonly Dictionary<string, long> _dependencySizes = new Dictionary<string, long>();
+        private readonly Dictionary<string, string> _referencedAssets = new Dictionary<string, string>();
 
         public ReferenceIndex References { get; } = new ReferenceIndex();
 
@@ -45,13 +46,21 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Tests
             return this;
         }
 
+        /// <summary>A file holding an AssetReference to the GUID, and where that GUID leads (empty for a deleted asset).</summary>
+        public SnapshotBuilder Reference(string source, string guid, string targetPath)
+        {
+            References.AddSerialized($"  _field:\n    m_AssetGUID: {guid}\n", null, source);
+            _referencedAssets[guid] = targetPath;
+            return this;
+        }
+
         public SnapshotBuilder DependencySize(string path, long megabytes)
         {
             _dependencySizes[path] = megabytes * 1024 * 1024;
             return this;
         }
 
-        public AddressablesSnapshot Build() => new AddressablesSnapshot(_groups, _bundles, References, _buildScenes, _dependencySizes);
+        public AddressablesSnapshot Build() => new AddressablesSnapshot(_groups, _bundles, References, _buildScenes, _dependencySizes, _referencedAssets);
 
         public static EntryRecord Entry(string address, string path = null, string[] labels = null, long megabytes = 0, params string[] dependencies)
         {
@@ -81,6 +90,53 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Tests
             Assert.That(findings, Has.Count.EqualTo(1));
             Assert.That(findings[0].ObjectPath, Is.EqualTo("Empty"));
             Assert.That(findings[0].Severity, Is.EqualTo(Severity.Warning));
+        }
+
+        [Test]
+        public void An_asset_reference_to_a_deleted_asset_is_an_error_at_the_file_that_holds_it()
+        {
+            AddressablesSnapshot snapshot = new SnapshotBuilder()
+                .Group("Props", SnapshotBuilder.Entry("crate"))
+                .Reference("Assets/Scenes/Arena.unity", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", string.Empty)
+                .Build();
+
+            List<Finding> findings = Run(new DanglingReferenceRule(), snapshot);
+
+            Assert.That(findings, Has.Count.EqualTo(1));
+            Assert.That(findings[0].Severity, Is.EqualTo(Severity.Error));
+            Assert.That(findings[0].AssetPath, Is.EqualTo("Assets/Scenes/Arena.unity"));
+            Assert.That(findings[0].Message, Does.Contain("no longer exists"));
+            Assert.That(findings[0].Detail, Is.EqualTo("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+        }
+
+        [Test]
+        public void An_asset_reference_to_something_that_is_not_addressable_names_it_once_per_file()
+        {
+            const string guid = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+            AddressablesSnapshot snapshot = new SnapshotBuilder()
+                .Group("Props", SnapshotBuilder.Entry("crate"))
+                .Reference("Assets/Scenes/Arena.unity", guid, "Assets/Prefabs/Lantern.prefab")
+                .Reference("Assets/Prefabs/Room.prefab", guid, "Assets/Prefabs/Lantern.prefab")
+                .Build();
+
+            List<Finding> findings = Run(new DanglingReferenceRule(), snapshot);
+
+            Assert.That(findings.ConvertAll(finding => finding.AssetPath), Is.EqualTo(new[] { "Assets/Scenes/Arena.unity", "Assets/Prefabs/Room.prefab" }));
+            Assert.That(findings[0].Message, Is.EqualTo("An AssetReference points at Assets/Prefabs/Lantern.prefab, which is not addressable"));
+        }
+
+        [Test]
+        public void An_asset_reference_to_an_entry_or_into_an_addressable_folder_is_fine()
+        {
+            EntryRecord crate = SnapshotBuilder.Entry("crate");
+            var folder = new EntryRecord("f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0", "icons", "Assets/Icons", isFolder: true);
+            AddressablesSnapshot snapshot = new SnapshotBuilder()
+                .Group("Props", crate, folder)
+                .Reference("Assets/Scenes/Arena.unity", crate.Guid, crate.AssetPath)
+                .Reference("Assets/Scenes/Arena.unity", "cccccccccccccccccccccccccccccccc", "Assets/Icons/Sword.png")
+                .Build();
+
+            Assert.That(Run(new DanglingReferenceRule(), snapshot), Is.Empty);
         }
 
         [Test]

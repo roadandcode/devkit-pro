@@ -75,11 +75,15 @@ namespace RoadAndCode.DevKit.AddressablesAudit
     public sealed class AddressablesSnapshot
     {
         private readonly IReadOnlyDictionary<string, long> _dependencySizes;
+        private readonly IReadOnlyDictionary<string, string> _referencedAssets;
 
         /// <param name="dependencySizes">File size of each asset the entries depend on, by path.</param>
+        /// <param name="referencedAssets">Where each GUID held by an AssetReference leads: the asset's path, or empty when it is gone.</param>
         public AddressablesSnapshot(IReadOnlyList<GroupRecord> groups, IReadOnlyList<BundleRecord> bundles, ReferenceIndex references,
-            IReadOnlyCollection<string> buildScenes, IReadOnlyDictionary<string, long> dependencySizes = null)
+            IReadOnlyCollection<string> buildScenes, IReadOnlyDictionary<string, long> dependencySizes = null,
+            IReadOnlyDictionary<string, string> referencedAssets = null)
         {
+            _referencedAssets = referencedAssets ?? new Dictionary<string, string>();
             Groups = groups ?? new GroupRecord[0];
             Bundles = bundles ?? new BundleRecord[0];
             References = references ?? new ReferenceIndex();
@@ -95,6 +99,9 @@ namespace RoadAndCode.DevKit.AddressablesAudit
 
         /// <summary>Scenes enabled in Build Settings.</summary>
         public ISet<string> BuildScenes { get; }
+
+        /// <summary>The path of the asset an AssetReference's GUID leads to. Empty when the asset is gone, null when it was not looked up.</summary>
+        public string ReferencedAssetPath(string guid) => _referencedAssets.TryGetValue(guid, out string path) ? path : null;
 
         /// <summary>The size on disk of something an entry depends on, or zero when it is not known.</summary>
         public long DependencySize(string assetPath) => _dependencySizes.TryGetValue(assetPath, out long bytes) ? bytes : 0;

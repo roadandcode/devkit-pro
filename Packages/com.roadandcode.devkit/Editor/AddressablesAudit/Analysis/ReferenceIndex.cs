@@ -17,10 +17,13 @@ namespace RoadAndCode.DevKit.AddressablesAudit
         private static readonly char[] LineBreaks = { '\n' };
         private static readonly char[] Quotes = { '"', '\'' };
 
-        private readonly HashSet<string> _guids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, List<string>> _guids = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> _names = new HashSet<string>(StringComparer.Ordinal);
 
-        public bool HasGuid(string guid) => _guids.Contains(guid);
+        /// <summary>Every GUID an AssetReference field holds, with the files it was found in.</summary>
+        public IReadOnlyDictionary<string, List<string>> Guids => _guids;
+
+        public bool HasGuid(string guid) => _guids.ContainsKey(guid);
 
         public bool HasName(string name) => _names.Contains(name);
 
@@ -41,9 +44,21 @@ namespace RoadAndCode.DevKit.AddressablesAudit
         /// plain string value that is one of the <paramref name="knownNames"/>, which is how an
         /// address kept in a string field is found.
         /// </summary>
-        public void AddSerialized(string yaml, ISet<string> knownNames)
+        /// <param name="source">The file the text came from, kept so a finding can point at it.</param>
+        public void AddSerialized(string yaml, ISet<string> knownNames, string source = "")
         {
-            foreach (Match match in AssetGuid.Matches(yaml)) _guids.Add(match.Groups[1].Value);
+            foreach (Match match in AssetGuid.Matches(yaml))
+            {
+                string guid = match.Groups[1].Value;
+                if (!_guids.TryGetValue(guid, out List<string> sources))
+                {
+                    sources = new List<string>();
+                    _guids[guid] = sources;
+                }
+
+                if (!sources.Contains(source)) sources.Add(source);
+            }
+
             foreach (Match match in LabelString.Matches(yaml)) _names.Add(Clean(match.Groups[1].Value));
             if (knownNames == null || knownNames.Count == 0) return;
 

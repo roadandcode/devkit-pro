@@ -60,8 +60,22 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Adapter
             }
 
             ReferenceIndex references = ReadReferences(settings.ConfigFolder, names, progress);
-            snapshot = new AddressablesSnapshot(groups, ReadBundles(), references, BuildScenes(), dependencySizes);
+            snapshot = new AddressablesSnapshot(groups, ReadBundles(), references, BuildScenes(), dependencySizes, Resolve(references));
             return true;
+        }
+
+        // Where each AssetReference leads. An empty path means the asset is not there any more.
+        private static Dictionary<string, string> Resolve(ReferenceIndex references)
+        {
+            var targets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (string guid in references.Guids.Keys)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                bool exists = !string.IsNullOrEmpty(path) && (File.Exists(path) || AssetDatabase.IsValidFolder(path));
+                targets[guid] = exists ? path : string.Empty;
+            }
+
+            return targets;
         }
 
         private static EntryRecord Read(AddressableAssetEntry entry, bool includePackageAssets)
@@ -169,7 +183,7 @@ namespace RoadAndCode.DevKit.AddressablesAudit.Adapter
                 }
                 else if ((extension == ".unity" || extension == ".prefab" || extension == ".asset") && IsText(path))
                 {
-                    index.AddSerialized(File.ReadAllText(path), names);
+                    index.AddSerialized(File.ReadAllText(path), names, path);
                 }
             }
 
