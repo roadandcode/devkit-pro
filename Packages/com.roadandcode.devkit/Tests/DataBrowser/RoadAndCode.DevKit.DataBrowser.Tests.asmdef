@@ -1,0 +1,25 @@
+{
+    "name": "RoadAndCode.DevKit.DataBrowser.Tests",
+    "rootNamespace": "RoadAndCode.DevKit.DataBrowser.Tests",
+    "references": [
+        "RoadAndCode.DevKit.Common",
+        "RoadAndCode.DevKit.DataBrowser",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

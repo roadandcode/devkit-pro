@@ -1,0 +1,27 @@
+{
+  "name": "com.roadandcode.devkit",
+  "version": "0.1.0",
+  "displayName": "DevKit Pro",
+  "description": "Editor tools I reuse across my Unity projects: a scene and asset validator, a build runner, an Addressables audit and a ScriptableObject browser. Each one has a window and a command-line entry point.",
+  "unity": "6000.5",
+  "dependencies": {
+    "com.unity.modules.uielements": "1.0.0"
+  },
+  "keywords": [
+    "editor",
+    "tools",
+    "validation",
+    "build",
+    "addressables"
+  ],
+  "author": {
+    "name": "Ravi Chaudhary",
+    "url": "https://github.com/roadandcode"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/roadandcode/devkit-pro.git"
+  },
+  "changelogUrl": "https://github.com/roadandcode/devkit-pro/blob/main/Packages/com.roadandcode.devkit/CHANGELOG.md"
+}
