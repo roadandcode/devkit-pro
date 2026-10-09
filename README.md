@@ -5,6 +5,7 @@ Four Unity editor tools I kept rewriting in one project after another, pulled to
 - **Package:** `com.roadandcode.devkit` 0.1.0, editor-only, no dependencies beyond Unity's own modules
 - **Unity:** 6000.5 (built and tested on 6000.5.8f1, Windows)
 - **Addressables:** optional. The audit is only compiled when the package is installed
+- **Page with the write-up:** https://roadandcode.vercel.app/project.html?id=devkit-pro
 
 ## Overview
 
@@ -89,7 +90,7 @@ or add the same line to `Packages/manifest.json`:
 "com.roadandcode.devkit": "https://github.com/roadandcode/devkit-pro.git?path=Packages/com.roadandcode.devkit#v0.1.0"
 ```
 
-**From a `.unitypackage`.** **Assets > Import Package > Custom Package…** and pick `DevKitPro-0.1.0.unitypackage`. It keeps the package's own paths, so it lands in `Packages/com.roadandcode.devkit` as an embedded package and behaves exactly like the Git install. The tests are left out of it.
+**From a `.unitypackage`.** Download `DevKitPro-0.1.0.unitypackage` from the [v0.1.0 release](https://github.com/roadandcode/devkit-pro/releases/tag/v0.1.0), then **Assets > Import Package > Custom Package…** and pick it. It keeps the package's own paths, so it lands in `Packages/com.roadandcode.devkit` as an embedded package and behaves exactly like the Git install. The tests are left out of it.
 
 The tools are then under **Tools > DevKit Pro**.
 
