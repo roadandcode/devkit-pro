@@ -5,7 +5,7 @@ Four Unity editor tools I kept rewriting in one project after another, pulled to
 - **Package:** `com.roadandcode.devkit` 0.1.0, editor-only, no dependencies beyond Unity's own modules
 - **Unity:** 6000.5 (built and tested on 6000.5.8f1, Windows)
 - **Addressables:** optional. The audit is only compiled when the package is installed
-- **Page with the write-up:** https://roadandcode.vercel.app/project.html?id=devkit-pro
+- **Page with the write-up:** https://roadandcode.in/project.html?id=devkit-pro
 
 ## Overview
 
